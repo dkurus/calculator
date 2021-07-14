@@ -27,19 +27,18 @@ let calc = {
         this.previousNum = ''; 
         this.result = '';
         this.currentOperator = '';
+        
+        
     },
     currentNum: '',
     previousNum: '',
     operator: '',
     result: '',
-}
-
-
-function clearCalculatorValues (){
+    hasDecimal: false,
 }
 
 let displayValue = '';
-let onScreenDisplay = document.querySelector('h3');
+let onScreenDisplay = document.querySelector('.display');
 function updateDisplay (passInDaNumba) {
    displayValue += passInDaNumba
    onScreenDisplay.textContent = displayValue;
@@ -48,6 +47,7 @@ function updateDisplay (passInDaNumba) {
 const allNumberButtons = document.querySelectorAll('.digit');
 allNumberButtons.forEach(button => {
   button.addEventListener('click', (e)=> {
+      if(calc.currentNum.includes('.') && e.target.id === '.'){return}
       if(calc.result) {
           calc.clear();
           displayValue = '';
@@ -82,18 +82,36 @@ allOperatorButtons.forEach(button => {
 
 const equalsOperatorBtn = document.querySelector('#equals');
 equalsOperatorBtn.addEventListener('click', ()=> {
-    calc.result = calc.calculate();
-    calc.operator = '';
-    displayValue = '';
-    updateDisplay(calc.result);
+    if (calc.currentNum && calc.previousNum && calc.operator){
+        calc.result = calc.calculate();
+        calc.operator = '';
+        displayValue = '';
+        updateDisplay(calc.result);
+    }
 })
 
 const clearBtn = document.querySelector('#clear');
 clearBtn.addEventListener('click', ()=> {
     calc.clear();
     displayValue = '';
-    updateDisplay('');
+    updateDisplay('0');
+    displayValue = '';
+});
+
+const modifyPlusMinusBtn = document.querySelector('#plusMinus');
+modifyPlusMinusBtn.addEventListener('click', ()=>{
+    calc.currentNum = (Number(calc.currentNum)*-1).toString();
+    displayValue = '';
+    updateDisplay(calc.currentNum);
 })
+
+const percentBtn = document.querySelector('#percent');
+percentBtn.addEventListener('click', ()=>{
+    calc.currentNum = (Number(calc.currentNum)/100).toFixed(2).toString();
+    displayValue = '';
+    updateDisplay(calc.currentNum);
+})
+
 
 
 
